@@ -1,4 +1,4 @@
-package com.kumliens.fondue.oandabridge.model;
+package com.kumliens.fondue.oanda.model;
 
 public class Quote {
 	

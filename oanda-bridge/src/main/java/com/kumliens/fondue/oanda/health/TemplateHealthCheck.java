@@ -1,4 +1,4 @@
-package com.kumliens.fondue.oandabridge.health;
+package com.kumliens.fondue.oanda.health;
 
 import com.yammer.metrics.core.HealthCheck;
 

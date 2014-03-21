@@ -1,6 +1,6 @@
 package com.kumliens.fondue.oanda;
 
-import com.kumliens.fondue.oandabridge.health.TemplateHealthCheck;
+import com.kumliens.fondue.oanda.health.TemplateHealthCheck;
 import com.yammer.dropwizard.Service;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;

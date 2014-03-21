@@ -12,7 +12,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import com.kumliens.fondue.oandabridge.model.Quote;
+import com.kumliens.fondue.oanda.model.Quote;
 import com.yammer.metrics.annotation.Timed;
 
 
