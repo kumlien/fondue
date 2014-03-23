@@ -6,3 +6,9 @@ oanda-bridge/.project
 oanda-bridge/.settings/org.eclipse.jdt.core.prefs
 
 oanda-bridge/.settings/org.eclipse.m2e.core.prefs
+
+oanda-service/.classpath
+
+oanda-service/.project
+
+*.prefs

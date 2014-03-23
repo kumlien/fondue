@@ -6,14 +6,16 @@ public class Quote {
 	public final String time;
 	public final String bid;
 	public final String ask;
+	public final String status;
 	private final long id;
 	
-	public Quote(long id, String instrument, String time, String bid, String ask) {
+	public Quote(long id, String instrument, String time, String bid, String ask, String status) {
 		this.id=id;
 		this.instrument=instrument;
 		this.time=time;
 		this.bid=bid;
 		this.ask=ask;
+		this.status=status;
 	}
 
 	public String getInstrument() {

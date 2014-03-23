@@ -36,6 +36,11 @@ public class QuoteResource {
 		// Apply RFC3339 format using JODA-TIME
 		DateTime dt = new DateTime(System.currentTimeMillis());
 		DateTimeFormatter dateFormatter = ISODateTimeFormat.dateTime();
-		return new Quote(counter.incrementAndGet(),instrument, dt.toString(dateFormatter), "1.0", "1.1");
+		return new Quote(
+				counter.incrementAndGet(),
+				instrument, 
+				dt.toString(dateFormatter), 
+				"1.0", "1.1",
+				"ok");
 	}
 }
