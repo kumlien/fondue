@@ -12,3 +12,11 @@ oanda-service/.classpath
 oanda-service/.project
 
 *.prefs
+
+oanda-data-fetcher/target/dependency-reduced-pom.xml
+
+oanda-data-fetcher/target/maven-archiver/pom.properties
+
+oanda-data-fetcher/target/oanda-data-fetcher-0.0.1-SNAPSHOT.jar
+
+oanda-data-fetcher/target/original-oanda-data-fetcher-0.0.1-SNAPSHOT.jar
