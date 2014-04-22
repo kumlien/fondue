@@ -1,4 +1,4 @@
-package com.kumliens.fondue.oanda;
+  package com.kumliens.fondue.oanda;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -12,8 +12,8 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import com.codahale.metrics.annotation.Timed;
 import com.kumliens.fondue.oanda.model.Quote;
-import com.yammer.metrics.annotation.Timed;
 
 
 @Path("/quote")

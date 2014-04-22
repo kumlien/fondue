@@ -1,11 +1,10 @@
 package com.kumliens.fondue.oanda;
 
-import com.kumliens.fondue.oanda.health.TemplateHealthCheck;
-import com.yammer.dropwizard.Service;
-import com.yammer.dropwizard.config.Bootstrap;
-import com.yammer.dropwizard.config.Environment;
+import io.dropwizard.Application;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
 
-public class OandaService extends Service<OandaConfiguration> {
+public class OandaService extends Application<OandaConfiguration> {
 
 	public static void main(String... args) throws Exception {
 		new OandaService().run(args);
@@ -13,16 +12,13 @@ public class OandaService extends Service<OandaConfiguration> {
 
 	@Override
 	public void initialize(Bootstrap<OandaConfiguration> arg0) {
-		arg0.setName("Oanda Service");
+		
 	}
 
 	@Override
-	public void run(OandaConfiguration configuration, Environment environment)
-			throws Exception {
+	public void run(OandaConfiguration configuration, Environment environment) throws Exception {
 		final String template = configuration.getTemplate();
 		final String defaultName = configuration.getDefaultName();
-		environment.addResource(new QuoteResource(template, defaultName));
-		environment.addHealthCheck(new TemplateHealthCheck(template));
 	}
 
 }
