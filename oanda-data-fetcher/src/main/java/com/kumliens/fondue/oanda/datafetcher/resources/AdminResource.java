@@ -10,7 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codahale.metrics.annotation.Timed;
+import com.kumliens.fondue.oanda.datafetcher.representation.PriceList;
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 
 
 @Path("/admin")
@@ -28,8 +30,9 @@ public class AdminResource {
 	@Timed
 	public String getPrice(@QueryParam("instrument") String instrument){
 		logger.debug("Fetching price for instrument " + instrument);
-		
-		return "OK";
+		WebResource resource = oandaClient.resource("http://api-sandbox.oanda.com/v1/quote?instruments=EUR_USD%2CUSD_JPY%2CEUR_CAD");
+		PriceList priceList = resource.get(PriceList.class);
+		return "OK " + priceList;
 	}
 	
 	
