@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+
+
 public class PriceList {
 	
 	@Override
@@ -12,13 +14,15 @@ public class PriceList {
 		return "PriceList [prices=" + prices + "]";
 	}
 
-	@JsonProperty
+	@JsonProperty(value="prices")
 	private List<Price> prices = new ArrayList<Price>();
 
+	
 	public List<Price> getPrices() {
 		return prices;
 	}
 
+	
 	public void setPrices(List<Price> prices) {
 		this.prices = prices;
 	}

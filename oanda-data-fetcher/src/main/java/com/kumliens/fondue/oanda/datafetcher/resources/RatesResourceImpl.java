@@ -19,6 +19,7 @@ import com.google.inject.Inject;
 import com.kumliens.fondue.oanda.datafetcher.guice.InstrumentsResource;
 import com.kumliens.fondue.oanda.datafetcher.guice.PriceResource;
 import com.kumliens.fondue.oanda.datafetcher.representation.Instrument;
+import com.kumliens.fondue.oanda.datafetcher.representation.Price;
 import com.kumliens.fondue.oanda.datafetcher.representation.PriceList;
 import com.kumliens.fondue.oanda.datafetcher.responses.InstrumentDataResponse;
 import com.kumliens.fondue.oanda.datafetcher.responses.InstrumentListResponse;
@@ -56,7 +57,7 @@ public class RatesResourceImpl implements RatesResource {
 		logger.info("Fetching price for instrument " + instrument);
 		
 		try {
-			PriceList priceList = instrumentsResource.get(new GenericType<PriceList>(PriceList.class));
+			PriceList priceList = priceResource.queryParam("instruments", instrument.getCode()).get(PriceList.class);
 			logger.warn("Got a string: " + priceList);
 
 			return priceList;
