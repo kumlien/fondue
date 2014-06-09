@@ -1,19 +1,23 @@
 package com.kumliens.fondue.oanda.datafetcher.health;
 
 import com.codahale.metrics.health.HealthCheck;
-import com.sun.jersey.api.client.Client;
+import com.google.inject.Inject;
+import com.kumliens.fondue.oanda.datafetcher.guice.OandaPriceResource;
+import com.kumliens.fondue.oanda.datafetcher.representation.Instrument;
+import com.kumliens.fondue.oanda.datafetcher.responses.PriceListResponse;
+import com.sun.jersey.api.client.WebResource;
 
 public class OandaHealthCheck extends HealthCheck {
 	
-	private final Client client;
+	@Inject @OandaPriceResource
+	private WebResource priceResource;
 
-	public OandaHealthCheck(Client client) {
-		this.client = client;
-	}
+	
 
 	@Override
 	protected Result check() throws Exception {
-		return Result.healthy();
+		PriceListResponse priceList = priceResource.queryParam("instruments", Instrument.EUR_CAD.getCode()).get(PriceListResponse.class);
+		return Result.healthy("Oanda healthcheck succesfully fetched price for EUR_CAD: " + priceList);
 	}
 
 }

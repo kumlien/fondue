@@ -1,12 +1,13 @@
-package com.kumliens.fondue.oanda.datafetcher.representation;
+package com.kumliens.fondue.oanda.datafetcher.responses;
 
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.kumliens.fondue.oanda.datafetcher.representation.Instrument;
 
 
 
-public class Price {
+public class PriceResponse {
 	
 	@Override
 	public String toString() {

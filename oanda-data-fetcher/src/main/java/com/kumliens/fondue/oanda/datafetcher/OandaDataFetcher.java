@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.kumliens.fondue.oanda.datafetcher.guice.DataFetcherModule;
-import com.kumliens.fondue.oanda.datafetcher.resources.RatesResource;
+import com.kumliens.fondue.oanda.datafetcher.health.OandaHealthCheck;
+import com.kumliens.fondue.oanda.datafetcher.resources.AdminResourceImpl;
+import com.kumliens.fondue.oanda.datafetcher.resources.RatesResourceImpl;
 
 /**
  * Starter for this service. 
@@ -42,12 +44,15 @@ public class OandaDataFetcher extends Application<DataFetcherConfiguration> {
 	public void run(DataFetcherConfiguration config, Environment env) throws Exception {
 		logger.debug("Configured interval is " + config.interval + " seconds");
 
-		//Client jerseyClient = new JerseyClientBuilder(env).using(config.getJerseyClientConfiguration()).build("jerseyClient");
 		Injector injector = Guice.createInjector(new DataFetcherModule(env, config));
 		
-		RatesResource rr = injector.getInstance(RatesResource.class);
+		RatesResourceImpl rr = injector.getInstance(RatesResourceImpl.class);
 		env.jersey().register(rr);
-		// env.healthChecks().register("oanda", new OandaHealthCheck(jerseyClient));
+		
+		AdminResourceImpl ar = injector.getInstance(AdminResourceImpl.class);
+		env.jersey().register(ar);
+		
+		env.healthChecks().register("oanda", injector.getInstance(OandaHealthCheck.class));
 	}
 
 }
