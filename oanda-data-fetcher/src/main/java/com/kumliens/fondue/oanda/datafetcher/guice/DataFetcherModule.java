@@ -3,6 +3,8 @@ package com.kumliens.fondue.oanda.datafetcher.guice;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.setup.Environment;
 
+import java.io.UnsupportedEncodingException;
+
 import com.google.inject.AbstractModule;
 import com.kumliens.fondue.oanda.datafetcher.DataFetcherConfiguration;
 import com.kumliens.fondue.oanda.datafetcher.health.OandaHealthCheck;
@@ -46,7 +48,11 @@ public class DataFetcherModule extends AbstractModule {
 		bind(RatesResourceImpl.class);
 		bind(AdminResourceImpl.class);
 
-        bind(PriceFetcherService.class);
+        try {
+            bind(PriceFetcherService.class).toInstance(new PriceFetcherService(this.config.interval));
+        } catch (final UnsupportedEncodingException e) {
+            throw new RuntimeException("Failed to create the PriceFetcherService", e);
+        }
 
 		bind(OandaHealthCheck.class);
 

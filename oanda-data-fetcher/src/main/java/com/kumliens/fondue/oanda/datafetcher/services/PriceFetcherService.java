@@ -1,6 +1,6 @@
 package com.kumliens.fondue.oanda.datafetcher.services;
 
-import java.net.URLEncoder;
+import java.io.UnsupportedEncodingException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -19,19 +19,27 @@ public class PriceFetcherService extends AbstractScheduledService {
 
     private static final Logger logger = LoggerFactory.getLogger(PriceFetcherService.class);
 
+    private final String instrumentList;
+
+    private final long interval;
+
     @Inject
     @OandaPriceResource
     private WebResource priceResource;
 
+    public PriceFetcherService(final long interval) throws UnsupportedEncodingException {
+        this.instrumentList = Instrument.asURLEncodedCommaSeparatedList();
+        this.interval = interval;
+    }
+
     @Override
     @Timed
     protected void runOneIteration() throws Exception {
-        String instruments = Instrument.asCommaSeparatedList();
-        instruments = URLEncoder.encode(instruments, "UTF-8");
-        logger.warn("Fetching prices with list " + instruments);
+
+        logger.info("Fetching prices with list " + this.instrumentList);
         try {
-            final PriceListResponse priceList = this.priceResource.queryParam("instruments", instruments).get(PriceListResponse.class);
-            logger.warn("Got prices: " + priceList);
+            final PriceListResponse priceList = this.priceResource.queryParam("instruments", this.instrumentList).get(PriceListResponse.class);
+            logger.info("Got prices: " + priceList);
         } catch (final Exception e) {
             logger.error("Error fetching prices...", e);
         }
@@ -39,7 +47,7 @@ public class PriceFetcherService extends AbstractScheduledService {
 
     @Override
     protected Scheduler scheduler() {
-        return Scheduler.newFixedRateSchedule(2500, 10000, TimeUnit.MILLISECONDS);
+        return Scheduler.newFixedRateSchedule(2500, this.interval, TimeUnit.MILLISECONDS);
     }
 
 }

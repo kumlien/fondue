@@ -1,5 +1,8 @@
 package com.kumliens.fondue.oanda.datafetcher.representation;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 public enum Instrument {
 
 	EUR_USD("EUR_USD"), USD_JPY("USD_JPY"), EUR_CAD("EUR_CAD");
@@ -13,8 +16,8 @@ public enum Instrument {
 	public String getCode() {
 		return this.code;
 	}
-    
-    public static String asCommaSeparatedList() {
+
+    public static String asURLEncodedCommaSeparatedList() throws UnsupportedEncodingException {
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < Instrument.values().length; i++) {
             sb.append(Instrument.values()[i].getCode());
@@ -23,6 +26,6 @@ public enum Instrument {
             }
         }
 
-        return sb.toString();
+        return URLEncoder.encode(sb.toString(), "UTF-8");
     }
 }
