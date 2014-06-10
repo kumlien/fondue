@@ -5,6 +5,7 @@ import io.dropwizard.setup.Environment;
 
 import java.io.UnsupportedEncodingException;
 
+import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.kumliens.fondue.oanda.datafetcher.DataFetcherConfiguration;
 import com.kumliens.fondue.oanda.datafetcher.health.OandaHealthCheck;
@@ -55,6 +56,8 @@ public class DataFetcherModule extends AbstractModule {
         }
 
 		bind(OandaHealthCheck.class);
+        
+        bind(EventBus.class).toInstance(new EventBus("The event bus"));
 
 	}
 

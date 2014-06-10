@@ -1,18 +1,22 @@
 package com.kumliens.fondue.oanda.datafetcher.representation;
 
 public enum ServiceAction {
-	
-	START("Start"), STOP("Stop"), STATUS("Status");
-	
+
+    START("Start"),
+    PAUSE("Pause"),
+    RESUME("Resume"),
+    STOP("Stop"),
+    STATUS("Status");
+
 	private final String action;
-	
-	private ServiceAction(String action) {
+
+	private ServiceAction(final String action) {
 		this.action = action;
 	}
 
 	public String getAction() {
-		return action;
+		return this.action;
 	}
-	
-	
+
+
 }

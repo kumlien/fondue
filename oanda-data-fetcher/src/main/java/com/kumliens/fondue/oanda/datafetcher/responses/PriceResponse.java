@@ -8,54 +8,65 @@ import com.kumliens.fondue.oanda.datafetcher.representation.Instrument;
 
 
 public class PriceResponse {
-	
+
 	@Override
 	public String toString() {
-		return "Price [instrument=" + instrument + ", time=" + time + ", bid="
-				+ bid + ", ask=" + ask + "]";
+		return "Price [instrument=" + this.instrument + ", time=" + this.time + ", bid="
+				+ this.bid + ", ask=" + this.ask + "]";
 	}
 
 	@JsonProperty
 	private Instrument instrument;
-	
+
 	@JsonProperty
 	private Date time;
-	
+
 	@JsonProperty
-	private Double bid; 
-	
+	private Double bid;
+
 	@JsonProperty
 	private Double ask;
+    
+    @JsonProperty(required = false)
+    private String status;
 
 	public Instrument getInstrument() {
-		return instrument;
+		return this.instrument;
 	}
 
-	public void setInstrument(Instrument instrument) {
+	public void setInstrument(final Instrument instrument) {
 		this.instrument = instrument;
 	}
 
 	public Date getTime() {
-		return time;
+		return this.time;
 	}
 
-	public void setTime(Date time) {
+	public void setTime(final Date time) {
 		this.time = time;
 	}
 
 	public Double getBid() {
-		return bid;
+		return this.bid;
 	}
 
-	public void setBid(Double bid) {
+	public void setBid(final Double bid) {
 		this.bid = bid;
 	}
 
 	public Double getAsk() {
-		return ask;
+		return this.ask;
 	}
 
-	public void setAsk(Double ask) {
+	public void setAsk(final Double ask) {
 		this.ask = ask;
 	}
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }
