@@ -55,7 +55,7 @@ public class OandaDataFetcher extends Application<DataFetcherConfiguration> {
 		env.jersey().register(ar);
 
 		env.healthChecks().register("oanda", injector.getInstance(OandaHealthCheck.class));
-        
+
         Service priceService = injector.getInstance(PriceFetcherService.class);
         priceService = priceService.startAsync();
 	}

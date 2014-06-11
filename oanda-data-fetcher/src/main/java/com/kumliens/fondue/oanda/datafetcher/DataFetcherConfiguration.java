@@ -7,28 +7,44 @@ import io.dropwizard.client.JerseyClientConfiguration;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.stuartgunter.dropwizard.cassandra.CassandraFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DataFetcherConfiguration extends Configuration {
-	
-	@JsonProperty
-	public int interval;
-	
-	@Valid
+
+    @JsonProperty
+    public int interval;
+
+    @Valid
     @NotNull
     @JsonProperty
-    private HttpClientConfiguration httpClient = new HttpClientConfiguration();
+    private final HttpClientConfiguration httpClient = new HttpClientConfiguration();
 
-	@Valid
+    @Valid
     @NotNull
     @JsonProperty
-	private JerseyClientConfiguration jersyClientConfiguration = new JerseyClientConfiguration();
+    private final JerseyClientConfiguration jersyClientConfiguration = new JerseyClientConfiguration();
 
-    public HttpClientConfiguration getHttpClientConfiguration() {
-        return httpClient;
+    @Valid
+    @NotNull
+    private CassandraFactory cassandra = new CassandraFactory();
+
+    @JsonProperty("cassandra")
+    public CassandraFactory getCassandraFactory() {
+        return this.cassandra;
     }
 
-	public JerseyClientConfiguration getJerseyClientConfiguration() {
-		return jersyClientConfiguration;
-	}
+    @JsonProperty("cassandra")
+    public void setCassandraFactory(final CassandraFactory cassandra) {
+        this.cassandra = cassandra;
+    }
+
+    public HttpClientConfiguration getHttpClientConfiguration() {
+        return this.httpClient;
+    }
+
+    public JerseyClientConfiguration getJerseyClientConfiguration() {
+        return this.jersyClientConfiguration;
+    }
 }

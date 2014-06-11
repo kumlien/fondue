@@ -5,6 +5,8 @@ import io.dropwizard.setup.Environment;
 
 import java.io.UnsupportedEncodingException;
 
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Session;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.kumliens.fondue.oanda.datafetcher.DataFetcherConfiguration;
@@ -55,8 +57,12 @@ public class DataFetcherModule extends AbstractModule {
             throw new RuntimeException("Failed to create the PriceFetcherService", e);
         }
 
+        final Cluster cassandra = this.config.getCassandraFactory().build(this.env);
+        bind(Cluster.class).toInstance(cassandra);
+        bind(Session.class).toInstance(cassandra.connect());
+
 		bind(OandaHealthCheck.class);
-        
+
         bind(EventBus.class).toInstance(new EventBus("The event bus"));
 
 	}
