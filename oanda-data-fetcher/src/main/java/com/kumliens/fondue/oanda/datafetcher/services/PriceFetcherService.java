@@ -17,6 +17,7 @@ import com.kumliens.fondue.oanda.datafetcher.events.ResumePriceFetcherServiceEve
 import com.kumliens.fondue.oanda.datafetcher.guice.OandaPriceResource;
 import com.kumliens.fondue.oanda.datafetcher.representation.Instrument;
 import com.kumliens.fondue.oanda.datafetcher.responses.PriceListResponse;
+import com.rabbitmq.client.ConnectionFactory;
 import com.sun.jersey.api.client.WebResource;
 
 public class PriceFetcherService extends AbstractScheduledService {
@@ -31,14 +32,24 @@ public class PriceFetcherService extends AbstractScheduledService {
     @OandaPriceResource
     private WebResource priceResource;
 
+    //Used to listen to admin commands from the admin resource
     @Inject
     private EventBus eventBus;
+    
+    //Our amqp connection
+    @Inject
+    ConnectionFactory connection;
 
     private boolean isPaused = false;
 
-    public PriceFetcherService(final long interval) throws UnsupportedEncodingException {
-        this.instrumentList = Instrument.asURLEncodedCommaSeparatedList();
+    public PriceFetcherService(final long interval) {
+        try {
+			this.instrumentList = Instrument.asURLEncodedCommaSeparatedList();
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
         this.interval = interval;
+        logger.info("Price service created with interval set to " + interval + " millis");
     }
 
     public void init() {

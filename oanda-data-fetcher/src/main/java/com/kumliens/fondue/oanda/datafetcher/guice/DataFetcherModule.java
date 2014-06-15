@@ -10,10 +10,12 @@ import com.datastax.driver.core.Session;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.kumliens.fondue.oanda.datafetcher.DataFetcherConfiguration;
+import com.kumliens.fondue.oanda.datafetcher.health.AmqpHealthCheck;
 import com.kumliens.fondue.oanda.datafetcher.health.OandaHealthCheck;
 import com.kumliens.fondue.oanda.datafetcher.resources.AdminResourceImpl;
 import com.kumliens.fondue.oanda.datafetcher.resources.RatesResourceImpl;
 import com.kumliens.fondue.oanda.datafetcher.services.PriceFetcherService;
+import com.rabbitmq.client.ConnectionFactory;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
@@ -35,7 +37,7 @@ public class DataFetcherModule extends AbstractModule {
 	@Override
 	protected void configure() {
 
-		final Client oandaClient = new JerseyClientBuilder(this.env).using(this.config.getJerseyClientConfiguration()).build("jerseyClient");
+		Client oandaClient = new JerseyClientBuilder(env).using(config.getJerseyClientConfiguration()).build("jerseyClient");
 		oandaClient.setReadTimeout(10000);
         oandaClient.setConnectTimeout(2500);
 
@@ -51,20 +53,29 @@ public class DataFetcherModule extends AbstractModule {
 		bind(RatesResourceImpl.class);
 		bind(AdminResourceImpl.class);
 
-        try {
-            bind(PriceFetcherService.class).toInstance(new PriceFetcherService(this.config.interval));
-        } catch (final UnsupportedEncodingException e) {
-            throw new RuntimeException("Failed to create the PriceFetcherService", e);
-        }
+        bind(PriceFetcherService.class).toInstance(new PriceFetcherService(config.interval));
 
-        final Cluster cassandra = this.config.getCassandraFactory().build(this.env);
+        Cluster cassandra = config.getCassandraFactory().build(this.env);
         bind(Cluster.class).toInstance(cassandra);
         bind(Session.class).toInstance(cassandra.connect());
+        
+        ConnectionFactory cf = createRabbitCF();
+        bind(ConnectionFactory.class).toInstance(cf);
 
 		bind(OandaHealthCheck.class);
+		bind(AmqpHealthCheck.class);
 
         bind(EventBus.class).toInstance(new EventBus("The event bus"));
+	}
 
+	private ConnectionFactory createRabbitCF() {
+		ConnectionFactory factory = new ConnectionFactory();
+        factory.setConnectionTimeout(1000);//times out in 1s.
+        factory.setUsername(config.getAmqp().getUsername());
+        factory.setPassword(config.getAmqp().getPassword());
+        factory.setHost(config.getAmqp().getHost());
+        factory.setPort(config.getAmqp().getPort());
+        return factory;
 	}
 
 }

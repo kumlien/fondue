@@ -25,17 +25,21 @@ public class DataFetcherConfiguration extends Configuration {
     @NotNull
     @JsonProperty
     private final JerseyClientConfiguration jersyClientConfiguration = new JerseyClientConfiguration();
+    
+    @Valid
+    @NotNull
+    @JsonProperty("amqp")
+    private AMQPConfiguration amqp = new AMQPConfiguration();
 
     @Valid
     @NotNull
+    @JsonProperty("cassandra")
     private CassandraFactory cassandra = new CassandraFactory();
 
-    @JsonProperty("cassandra")
     public CassandraFactory getCassandraFactory() {
         return this.cassandra;
     }
 
-    @JsonProperty("cassandra")
     public void setCassandraFactory(final CassandraFactory cassandra) {
         this.cassandra = cassandra;
     }
@@ -47,4 +51,12 @@ public class DataFetcherConfiguration extends Configuration {
     public JerseyClientConfiguration getJerseyClientConfiguration() {
         return this.jersyClientConfiguration;
     }
+
+	public AMQPConfiguration getAmqp() {
+		return amqp;
+	}
+
+	public void setAmqp(AMQPConfiguration amqp) {
+		this.amqp = amqp;
+	}
 }
