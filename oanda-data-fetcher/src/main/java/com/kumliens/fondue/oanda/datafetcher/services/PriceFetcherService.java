@@ -1,5 +1,6 @@
 package com.kumliens.fondue.oanda.datafetcher.services;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.concurrent.TimeUnit;
 
@@ -17,6 +18,7 @@ import com.kumliens.fondue.oanda.datafetcher.events.ResumePriceFetcherServiceEve
 import com.kumliens.fondue.oanda.datafetcher.guice.OandaPriceResource;
 import com.kumliens.fondue.oanda.datafetcher.representation.Instrument;
 import com.kumliens.fondue.oanda.datafetcher.responses.PriceListResponse;
+import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.ConnectionFactory;
 import com.sun.jersey.api.client.WebResource;
 
@@ -39,13 +41,18 @@ public class PriceFetcherService extends AbstractScheduledService {
     //Our amqp connection
     @Inject
     ConnectionFactory connection;
+    
+    Channel channel;
 
     private boolean isPaused = false;
 
     public PriceFetcherService(final long interval) {
         try {
-			this.instrumentList = Instrument.asURLEncodedCommaSeparatedList();
+			instrumentList = Instrument.asURLEncodedCommaSeparatedList();
+			channel = connection.newConnection().createChannel();
 		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
         this.interval = interval;
@@ -78,6 +85,7 @@ public class PriceFetcherService extends AbstractScheduledService {
         try {
             final PriceListResponse priceList = this.priceResource.queryParam("instruments", this.instrumentList).get(PriceListResponse.class);
             logger.info("Got prices: " + priceList);
+            
         } catch (final Exception e) {
             logger.error("Error fetching prices...", e);
         }
