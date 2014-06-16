@@ -13,6 +13,7 @@ import com.google.inject.Injector;
 import com.kumliens.fondue.oanda.datafetcher.guice.DataFetcherModule;
 import com.kumliens.fondue.oanda.datafetcher.health.AmqpHealthCheck;
 import com.kumliens.fondue.oanda.datafetcher.health.OandaHealthCheck;
+import com.kumliens.fondue.oanda.datafetcher.rabbitmq.RabbitMQGateway;
 import com.kumliens.fondue.oanda.datafetcher.resources.AdminResourceImpl;
 import com.kumliens.fondue.oanda.datafetcher.resources.RatesResourceImpl;
 import com.kumliens.fondue.oanda.datafetcher.services.PriceFetcherService;
@@ -57,10 +58,12 @@ public class OandaDataFetcher extends Application<DataFetcherConfiguration> {
 
 		env.healthChecks().register("Oanda API", injector.getInstance(OandaHealthCheck.class));
 		env.healthChecks().register("RabbitMQ", injector.getInstance(AmqpHealthCheck.class));
-		
+
+        env.lifecycle().manage(injector.getInstance(RabbitMQGateway.class));
+
         Service priceService = injector.getInstance(PriceFetcherService.class);
         priceService = priceService.startAsync();
-        
+
 	}
 
 }

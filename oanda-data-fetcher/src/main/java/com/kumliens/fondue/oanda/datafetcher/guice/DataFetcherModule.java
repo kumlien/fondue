@@ -10,6 +10,7 @@ import com.google.inject.AbstractModule;
 import com.kumliens.fondue.oanda.datafetcher.DataFetcherConfiguration;
 import com.kumliens.fondue.oanda.datafetcher.health.AmqpHealthCheck;
 import com.kumliens.fondue.oanda.datafetcher.health.OandaHealthCheck;
+import com.kumliens.fondue.oanda.datafetcher.rabbitmq.RabbitMQGateway;
 import com.kumliens.fondue.oanda.datafetcher.resources.AdminResourceImpl;
 import com.kumliens.fondue.oanda.datafetcher.resources.RatesResourceImpl;
 import com.kumliens.fondue.oanda.datafetcher.services.PriceFetcherService;
@@ -62,6 +63,8 @@ public class DataFetcherModule extends AbstractModule {
         bind(PriceFetcherService.class);
         bind(OandaHealthCheck.class);
 		bind(AmqpHealthCheck.class);
+
+        bind(RabbitMQGateway.class);
 
         bind(EventBus.class).toInstance(new EventBus("The event bus"));
 	}
