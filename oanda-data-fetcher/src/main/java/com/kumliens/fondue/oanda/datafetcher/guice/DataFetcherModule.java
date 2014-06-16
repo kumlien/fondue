@@ -3,8 +3,6 @@ package com.kumliens.fondue.oanda.datafetcher.guice;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.setup.Environment;
 
-import java.io.UnsupportedEncodingException;
-
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import com.google.common.eventbus.EventBus;
@@ -37,7 +35,7 @@ public class DataFetcherModule extends AbstractModule {
 	@Override
 	protected void configure() {
 
-		Client oandaClient = new JerseyClientBuilder(env).using(config.getJerseyClientConfiguration()).build("jerseyClient");
+		final Client oandaClient = new JerseyClientBuilder(this.env).using(this.config.getJerseyClientConfiguration()).build("jerseyClient");
 		oandaClient.setReadTimeout(10000);
         oandaClient.setConnectTimeout(2500);
 
@@ -49,32 +47,32 @@ public class DataFetcherModule extends AbstractModule {
 			.annotatedWith(OandaPriceResource.class)
 			.toInstance(oandaClient.resource("http://api-sandbox.oanda.com/v1/prices"));
 
+        bind(DataFetcherConfiguration.class).toInstance(this.config);
 
 		bind(RatesResourceImpl.class);
 		bind(AdminResourceImpl.class);
 
-        bind(PriceFetcherService.class).toInstance(new PriceFetcherService(config.interval));
-
-        Cluster cassandra = config.getCassandraFactory().build(this.env);
+        final Cluster cassandra = this.config.getCassandraFactory().build(this.env);
         bind(Cluster.class).toInstance(cassandra);
         bind(Session.class).toInstance(cassandra.connect());
-        
-        ConnectionFactory cf = createRabbitCF();
+
+        final ConnectionFactory cf = createRabbitCF();
         bind(ConnectionFactory.class).toInstance(cf);
 
-		bind(OandaHealthCheck.class);
+        bind(PriceFetcherService.class);
+        bind(OandaHealthCheck.class);
 		bind(AmqpHealthCheck.class);
 
         bind(EventBus.class).toInstance(new EventBus("The event bus"));
 	}
 
 	private ConnectionFactory createRabbitCF() {
-		ConnectionFactory factory = new ConnectionFactory();
+		final ConnectionFactory factory = new ConnectionFactory();
         factory.setConnectionTimeout(1000);//times out in 1s.
-        factory.setUsername(config.getAmqp().getUsername());
-        factory.setPassword(config.getAmqp().getPassword());
-        factory.setHost(config.getAmqp().getHost());
-        factory.setPort(config.getAmqp().getPort());
+        factory.setUsername(this.config.getAmqp().getUsername());
+        factory.setPassword(this.config.getAmqp().getPassword());
+        factory.setHost(this.config.getAmqp().getHost());
+        factory.setPort(this.config.getAmqp().getPort());
         return factory;
 	}
 

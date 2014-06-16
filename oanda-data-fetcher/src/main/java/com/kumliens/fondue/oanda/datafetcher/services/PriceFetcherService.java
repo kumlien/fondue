@@ -13,6 +13,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.AbstractScheduledService;
+import com.kumliens.fondue.oanda.datafetcher.DataFetcherConfiguration;
 import com.kumliens.fondue.oanda.datafetcher.events.PausePriceFetcherServiceEvent;
 import com.kumliens.fondue.oanda.datafetcher.events.ResumePriceFetcherServiceEvent;
 import com.kumliens.fondue.oanda.datafetcher.guice.OandaPriceResource;
@@ -37,26 +38,24 @@ public class PriceFetcherService extends AbstractScheduledService {
     //Used to listen to admin commands from the admin resource
     @Inject
     private EventBus eventBus;
-    
-    //Our amqp connection
-    @Inject
-    ConnectionFactory connection;
-    
-    Channel channel;
+
+    private Channel channel;
 
     private boolean isPaused = false;
 
-    public PriceFetcherService(final long interval) {
+    @Inject
+    public PriceFetcherService(final ConnectionFactory connectionFactory, final DataFetcherConfiguration config) {
         try {
-			instrumentList = Instrument.asURLEncodedCommaSeparatedList();
-			channel = connection.newConnection().createChannel();
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-        this.interval = interval;
-        logger.info("Price service created with interval set to " + interval + " millis");
+            this.instrumentList = Instrument.asURLEncodedCommaSeparatedList();
+            System.out.println("Connection factory: " + connectionFactory);
+            this.channel = connectionFactory.newConnection().createChannel();
+        } catch (final UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+        this.interval = config.interval;
+        logger.info("Price service created with interval set to " + this.interval + " millis");
     }
 
     public void init() {
@@ -85,7 +84,7 @@ public class PriceFetcherService extends AbstractScheduledService {
         try {
             final PriceListResponse priceList = this.priceResource.queryParam("instruments", this.instrumentList).get(PriceListResponse.class);
             logger.info("Got prices: " + priceList);
-            
+
         } catch (final Exception e) {
             logger.error("Error fetching prices...", e);
         }
