@@ -7,7 +7,7 @@ import com.kumliens.fondue.oanda.datafetcher.representation.Instrument;
 
 
 
-public class PriceResponse {
+public class Price {
 
 	@Override
 	public String toString() {

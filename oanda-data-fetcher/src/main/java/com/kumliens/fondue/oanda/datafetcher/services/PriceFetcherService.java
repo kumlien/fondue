@@ -14,10 +14,12 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.AbstractScheduledService;
 import com.kumliens.fondue.oanda.datafetcher.DataFetcherConfiguration;
+import com.kumliens.fondue.oanda.datafetcher.events.NewPriceAvailableEvent;
 import com.kumliens.fondue.oanda.datafetcher.events.PausePriceFetcherServiceEvent;
 import com.kumliens.fondue.oanda.datafetcher.events.ResumePriceFetcherServiceEvent;
 import com.kumliens.fondue.oanda.datafetcher.guice.OandaPriceResource;
 import com.kumliens.fondue.oanda.datafetcher.representation.Instrument;
+import com.kumliens.fondue.oanda.datafetcher.responses.Price;
 import com.kumliens.fondue.oanda.datafetcher.responses.PriceListResponse;
 import com.rabbitmq.client.ConnectionFactory;
 import com.sun.jersey.api.client.WebResource;
@@ -33,12 +35,15 @@ public class PriceFetcherService extends AbstractScheduledService {
     @Inject
     @OandaPriceResource
     private WebResource priceResource;
+    
+    private final EventBus eventBus;
 
     private boolean isPaused = false;
 
     @Inject
     public PriceFetcherService(final ConnectionFactory connectionFactory, final DataFetcherConfiguration config, final EventBus eventBus) {
         try {
+        	this.eventBus = eventBus;
             eventBus.register(this);
             this.instrumentList = Instrument.asURLEncodedCommaSeparatedList();
         } catch (final UnsupportedEncodingException e) {
@@ -72,6 +77,9 @@ public class PriceFetcherService extends AbstractScheduledService {
             final PriceListResponse priceList = this.priceResource.queryParam("instruments", this.instrumentList).get(PriceListResponse.class);
             logger.info("Got prices: " + priceList);
             //todo post to the eventbus to get picked up by the rabbit gateway
+            for(Price price : priceList.getPrices()) {
+            	eventBus.post(new NewPriceAvailableEvent(price));
+            }
 
         } catch (final Exception e) {
             logger.error("Error fetching prices...", e);

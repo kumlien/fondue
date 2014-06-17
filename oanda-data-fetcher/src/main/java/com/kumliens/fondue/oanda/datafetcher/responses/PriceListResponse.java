@@ -15,15 +15,15 @@ public class PriceListResponse {
 	}
 
 	@JsonProperty(value="prices")
-	private List<PriceResponse> prices = new ArrayList<PriceResponse>();
+	private List<Price> prices = new ArrayList<Price>();
 
 	
-	public List<PriceResponse> getPrices() {
+	public List<Price> getPrices() {
 		return prices;
 	}
 
 	
-	public void setPrices(List<PriceResponse> prices) {
+	public void setPrices(List<Price> prices) {
 		this.prices = prices;
 	}
 }

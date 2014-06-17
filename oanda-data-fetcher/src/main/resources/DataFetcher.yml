@@ -2,10 +2,10 @@ interval: 10000
 
 cassandra:
  clusterName: "Svantes cluster"
- contactPoints: ["ws30809.idealo"]
+ contactPoints: ["127.0.0.1"]
 
 amqp:
-  host: ws30809
+  host: 127.0.0.1
   port: 5672
   #username: guest
   #password: guest
