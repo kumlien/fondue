@@ -11,7 +11,7 @@ import org.stuartgunter.dropwizard.cassandra.CassandraFactory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class DataFetcherConfiguration extends Configuration {
+public class OandaServiceConfiguration extends Configuration {
 
     @JsonProperty
     public int interval;

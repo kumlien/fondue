@@ -7,7 +7,7 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
-import com.kumliens.fondue.oanda.DataFetcherConfiguration;
+import com.kumliens.fondue.oanda.OandaServiceConfiguration;
 import com.kumliens.fondue.oanda.health.AmqpHealthCheck;
 import com.kumliens.fondue.oanda.health.OandaHealthCheck;
 import com.kumliens.fondue.oanda.rabbitmq.RabbitMQGateway;
@@ -26,9 +26,9 @@ import com.sun.jersey.api.client.WebResource;
 public class DataFetcherModule extends AbstractModule {
 
 	private final Environment env;
-	private final DataFetcherConfiguration config;
+	private final OandaServiceConfiguration config;
 
-	public DataFetcherModule(final Environment env, final DataFetcherConfiguration config) {
+	public DataFetcherModule(final Environment env, final OandaServiceConfiguration config) {
 		this.env = env;
 		this.config = config;
 	}
@@ -48,7 +48,7 @@ public class DataFetcherModule extends AbstractModule {
 			.annotatedWith(OandaPriceResource.class)
 			.toInstance(oandaClient.resource("http://api-sandbox.oanda.com/v1/prices"));
 
-        bind(DataFetcherConfiguration.class).toInstance(this.config);
+        bind(OandaServiceConfiguration.class).toInstance(this.config);
 
 		bind(RatesResourceImpl.class);
 		bind(AdminResourceImpl.class);

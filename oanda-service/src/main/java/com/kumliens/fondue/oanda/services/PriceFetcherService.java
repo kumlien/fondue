@@ -13,7 +13,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.AbstractScheduledService;
-import com.kumliens.fondue.oanda.DataFetcherConfiguration;
+import com.kumliens.fondue.oanda.OandaServiceConfiguration;
 import com.kumliens.fondue.oanda.events.NewPriceAvailableEvent;
 import com.kumliens.fondue.oanda.events.PausePriceFetcherServiceEvent;
 import com.kumliens.fondue.oanda.events.ResumePriceFetcherServiceEvent;
@@ -41,7 +41,7 @@ public class PriceFetcherService extends AbstractScheduledService {
     private boolean isPaused = false;
 
     @Inject
-    public PriceFetcherService(final ConnectionFactory connectionFactory, final DataFetcherConfiguration config, final EventBus eventBus) {
+    public PriceFetcherService(final ConnectionFactory connectionFactory, final OandaServiceConfiguration config, final EventBus eventBus) {
         try {
         	this.eventBus = eventBus;
             eventBus.register(this);

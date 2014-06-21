@@ -25,7 +25,7 @@ import com.kumliens.fondue.oanda.services.PriceFetcherService;
  *
  * @author svante
  */
-public class Main extends Application<DataFetcherConfiguration> {
+public class Main extends Application<OandaServiceConfiguration> {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(Main.class);
@@ -36,16 +36,16 @@ public class Main extends Application<DataFetcherConfiguration> {
 
 	@Override
 	public String getName() {
-		return "Oanda data-fetcher application";
+		return "Oanda Service application";
 	}
 
 	@Override
-	public void initialize(final Bootstrap<DataFetcherConfiguration> config) {
+	public void initialize(final Bootstrap<OandaServiceConfiguration> config) {
 
 	}
 
 	@Override
-	public void run(final DataFetcherConfiguration config, final Environment env) throws Exception {
+	public void run(final OandaServiceConfiguration config, final Environment env) throws Exception {
 		logger.debug("Configured interval is " + config.interval + " seconds");
 
 		final Injector injector = Guice.createInjector(new DataFetcherModule(env, config));
