@@ -24,3 +24,7 @@ oanda-data-fetcher/target/original-oanda-data-fetcher-0.0.1-SNAPSHOT.jar
 oanda-data-fetcher/.classpath
 
 oanda-data-fetcher/.project
+
+*.classpath
+
+*.project
