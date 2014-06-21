@@ -25,13 +25,13 @@ import com.kumliens.fondue.oanda.datafetcher.services.PriceFetcherService;
  *
  * @author svante
  */
-public class OandaDataFetcher extends Application<DataFetcherConfiguration> {
+public class Main extends Application<DataFetcherConfiguration> {
 
 	private static final Logger logger = LoggerFactory
-			.getLogger(OandaDataFetcher.class);
+			.getLogger(Main.class);
 
 	public static void main(final String[] args) throws Exception {
-		new OandaDataFetcher().run(args);
+		new Main().run(args);
 	}
 
 	@Override
