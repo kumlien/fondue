@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.util.concurrent.Service;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.kumliens.fondue.oanda.guice.DataFetcherModule;
+import com.kumliens.fondue.oanda.guice.OandaServiceModule;
 import com.kumliens.fondue.oanda.health.AmqpHealthCheck;
 import com.kumliens.fondue.oanda.health.OandaHealthCheck;
 import com.kumliens.fondue.oanda.rabbitmq.RabbitMQGateway;
@@ -46,9 +46,8 @@ public class Main extends Application<OandaServiceConfiguration> {
 
 	@Override
 	public void run(final OandaServiceConfiguration config, final Environment env) throws Exception {
-		logger.debug("Configured interval is " + config.interval + " seconds");
 
-		final Injector injector = Guice.createInjector(new DataFetcherModule(env, config));
+		final Injector injector = Guice.createInjector(new OandaServiceModule(env, config));
 
 		final RatesResourceImpl rr = injector.getInstance(RatesResourceImpl.class);
 		env.jersey().register(rr);

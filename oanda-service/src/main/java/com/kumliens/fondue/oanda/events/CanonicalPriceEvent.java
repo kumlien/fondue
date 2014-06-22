@@ -19,6 +19,8 @@ public class CanonicalPriceEvent {
 	
 	private Double ask;
 	
+	private static final String serviceProvider = "oanda";
+	
 	public static class Builder {
 		
 		private final CanonicalPriceEvent event;
@@ -30,8 +32,8 @@ public class CanonicalPriceEvent {
 		public Builder withOandaPrice(Price oandaPrice) {
 			event.date = oandaPrice.getTime();
 			event.instrument = oandaPrice.getInstrument().getCode();
-			event.bid = oandaPrice.getBid();
-			event.ask = oandaPrice.getAsk();
+			event.setBid(oandaPrice.getBid());
+			event.setAsk(oandaPrice.getAsk());
 			
 			return this;
 		}
@@ -48,6 +50,31 @@ public class CanonicalPriceEvent {
 
 	public String getInstrument() {
 		return instrument;
+	}
+
+
+	public Double getAsk() {
+		return ask;
+	}
+
+
+	public void setAsk(Double ask) {
+		this.ask = ask;
+	}
+
+
+	public Double getBid() {
+		return bid;
+	}
+
+
+	public void setBid(Double bid) {
+		this.bid = bid;
+	}
+
+
+	public String getServiceprovider() {
+		return serviceProvider;
 	}
 
 }

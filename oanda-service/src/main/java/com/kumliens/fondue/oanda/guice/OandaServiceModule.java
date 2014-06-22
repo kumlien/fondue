@@ -23,12 +23,12 @@ import com.sun.jersey.api.client.WebResource;
  *
  * @author svante
  */
-public class DataFetcherModule extends AbstractModule {
+public class OandaServiceModule extends AbstractModule {
 
 	private final Environment env;
 	private final OandaServiceConfiguration config;
 
-	public DataFetcherModule(final Environment env, final OandaServiceConfiguration config) {
+	public OandaServiceModule(final Environment env, final OandaServiceConfiguration config) {
 		this.env = env;
 		this.config = config;
 	}
@@ -57,8 +57,7 @@ public class DataFetcherModule extends AbstractModule {
         bind(Cluster.class).toInstance(cassandra);
         bind(Session.class).toInstance(cassandra.connect());
 
-        final ConnectionFactory cf = createRabbitCF();
-        bind(ConnectionFactory.class).toInstance(cf);
+        bind(ConnectionFactory.class).toInstance(createRabbitCF());
 
         bind(PriceFetcherService.class);
         bind(OandaHealthCheck.class);

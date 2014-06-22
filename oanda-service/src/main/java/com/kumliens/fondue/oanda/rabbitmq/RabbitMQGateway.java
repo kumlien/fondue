@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
+import com.kumliens.fondue.oanda.OandaServiceConfiguration;
 import com.kumliens.fondue.oanda.events.CanonicalPriceEvent;
 import com.kumliens.fondue.oanda.events.NewPriceAvailableEvent;
 import com.kumliens.fondue.oanda.responses.Price;
@@ -28,22 +29,29 @@ public class RabbitMQGateway implements Managed {
     
     private static final String ROUTING_KEY_PREFIX = "prices.oanda.fx.";
 
-    @Inject
     private ConnectionFactory cf;
     
-    @Inject
     private EventBus eventBus;
     
     private Connection connection;
     
     private Channel channel;
+    
+    private final String exchangeName;
+    
+    @Inject
+    public RabbitMQGateway(ConnectionFactory cf, EventBus eventBus, OandaServiceConfiguration config) {
+		this.cf = cf;
+		this.eventBus = eventBus;
+		this.exchangeName = config.getAmqp().getExchange();
+	}
 
-    @Override
+	@Override
     public void start() throws Exception {
         //Set up the queues and exchanges
         connection = cf.newConnection();
         channel = connection.createChannel();
-        channel.exchangeDeclare("prices", "topic");
+        channel.exchangeDeclare(exchangeName, "topic");
         eventBus.register(this);
         logger.info("Started..." + this.cf);
     }

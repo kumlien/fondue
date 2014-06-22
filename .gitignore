@@ -28,3 +28,11 @@ oanda-data-fetcher/.project
 *.classpath
 
 *.project
+
+/historic-price-service/.settings
+
+/historic-price-service/target
+
+.settings
+
+target

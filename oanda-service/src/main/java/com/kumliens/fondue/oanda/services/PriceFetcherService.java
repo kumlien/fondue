@@ -1,6 +1,5 @@
 package com.kumliens.fondue.oanda.services;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.concurrent.TimeUnit;
 
@@ -47,8 +46,6 @@ public class PriceFetcherService extends AbstractScheduledService {
             eventBus.register(this);
             this.instrumentList = Instrument.asURLEncodedCommaSeparatedList();
         } catch (final UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        } catch (final IOException e) {
             throw new RuntimeException(e);
         }
         this.interval = config.interval;

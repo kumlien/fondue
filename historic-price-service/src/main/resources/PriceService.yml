@@ -1,4 +1,11 @@
-interval: 10000
+server:
+ applicationConnectors:
+  - type: http
+    port: 9080
+
+ adminConnectors:
+  - type: http
+    port: 9081
 
 cassandra:
  clusterName: "Svantes cluster"
@@ -7,8 +14,8 @@ cassandra:
 amqp:
   host: 127.0.0.1
   port: 5672
-  #username: guest
-  #password: guest
-  #exchange:
-  #queue:
-  #routingKey:
+  username: guest
+  password: guest
+  exchange: prices
+  queue: historic-price-service
+  routingKey: "prices.#"
