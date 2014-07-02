@@ -11,6 +11,7 @@ import com.kumliens.fondue.oanda.responses.Price;
  */
 public class CanonicalPriceEvent {
 	
+	
 	private String instrument;
 	
 	private Date date;
