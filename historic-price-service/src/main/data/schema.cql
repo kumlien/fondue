@@ -1,3 +1,4 @@
+--/cqlsh -f ~/Documents/dev/repos/fondue/historic-price-service/src/main/data/schema.cql
 DROP KEYSPACE IF EXISTS fondue;
 
 CREATE KEYSPACE fondue WITH REPLICATION = {'class':'SimpleStrategy', 'replication_factor':1};

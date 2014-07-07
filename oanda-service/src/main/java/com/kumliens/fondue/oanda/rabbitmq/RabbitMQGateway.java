@@ -73,7 +73,7 @@ public class RabbitMQGateway implements Managed {
     	
         try {
 			channel.basicPublish("prices", routingKey, null, mapper.writeValueAsString(eventToPublish).getBytes());
-			logger.info("Price published");
+			logger.debug("Price published: " + eventToPublish);
 		} catch (IOException e) {
 			logger.error("Unable to publish new price message", e);
 		}

@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import org.apache.http.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,46 +39,55 @@ public class PriceFetcherService extends AbstractScheduledService {
     private final EventBus eventBus;
 
     private boolean isPaused = false;
+    
+    private final String authHeaderContent;
 
     @Inject
     public PriceFetcherService(final ConnectionFactory connectionFactory, final OandaServiceConfiguration config, final EventBus eventBus) {
         try {
         	this.eventBus = eventBus;
             eventBus.register(this);
-            this.instrumentList = Instrument.asURLEncodedCommaSeparatedList();
+            instrumentList = Instrument.asURLEncodedCommaSeparatedList();
+            authHeaderContent = "Bearer " + config.getOanda().getApiKey();
         } catch (final UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
-        this.interval = config.interval;
+        this.interval = config.getOanda().getFetchInterval();
+        if(interval < 1000) {
+        	throw new RuntimeException("Interval must be higher than 1000 but is " + interval);
+        }
         logger.info("Price service created with interval set to " + this.interval + " millis");
     }
 
     @Subscribe
     public void onPause(final PausePriceFetcherServiceEvent ppfs) {
-        this.isPaused = true;
+        isPaused = true;
     }
 
     @Subscribe
     public void onResume(final ResumePriceFetcherServiceEvent rpfs) {
-        this.isPaused = false;
+        isPaused = false;
     }
 
     @Override
     @Timed
     protected void runOneIteration() throws Exception {
-        if (this.isPaused) {
+        if (isPaused) {
             logger.info("We are paused...");
             return;
         }
-        logger.info("Fetching prices with list " + this.instrumentList);
+        logger.info("Fetching prices with list " + instrumentList);
         try {
-            final PriceListResponse priceList = this.priceResource.queryParam("instruments", this.instrumentList).get(PriceListResponse.class);
+        	priceResource.queryParam("", "").header("Authorization", authHeaderContent);
+            final PriceListResponse priceList = priceResource.
+            		queryParam("instruments", this.instrumentList).
+            		header("Authorization", authHeaderContent).
+            		get(PriceListResponse.class);
             logger.info("Got prices: " + priceList);
             //todo post to the eventbus to get picked up by the rabbit gateway
             for(Price price : priceList.getPrices()) {
             	eventBus.post(new NewPriceAvailableEvent(price));
             }
-
         } catch (final Exception e) {
             logger.error("Error fetching prices...", e);
         }

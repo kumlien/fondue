@@ -13,9 +13,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class OandaServiceConfiguration extends Configuration {
 
-    @JsonProperty
-    public int interval;
-
     @Valid
     @NotNull
     @JsonProperty
@@ -30,6 +27,13 @@ public class OandaServiceConfiguration extends Configuration {
     @NotNull
     @JsonProperty("amqp")
     private AMQPConfiguration amqp = new AMQPConfiguration();
+    
+  
+    @Valid
+    @NotNull
+    @JsonProperty("oanda")
+    private OandaConfiguration oanda = new OandaConfiguration();
+    
 
     @Valid
     @NotNull
@@ -58,5 +62,13 @@ public class OandaServiceConfiguration extends Configuration {
 
 	public void setAmqp(AMQPConfiguration amqp) {
 		this.amqp = amqp;
+	}
+
+	public OandaConfiguration getOanda() {
+		return oanda;
+	}
+
+	public void setOanda(OandaConfiguration oanda) {
+		this.oanda = oanda;
 	}
 }

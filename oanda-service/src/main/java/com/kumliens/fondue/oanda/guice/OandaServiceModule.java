@@ -7,6 +7,7 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
+import com.kumliens.fondue.oanda.OandaConfiguration;
 import com.kumliens.fondue.oanda.OandaServiceConfiguration;
 import com.kumliens.fondue.oanda.health.AmqpHealthCheck;
 import com.kumliens.fondue.oanda.health.OandaHealthCheck;
@@ -19,7 +20,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
 /**
- * Guice bindings for the DataFetcher service
+ * Guice bindings for the oanda-service
  *
  * @author svante
  */
@@ -36,17 +37,7 @@ public class OandaServiceModule extends AbstractModule {
 	@Override
 	protected void configure() {
 
-		final Client oandaClient = new JerseyClientBuilder(this.env).using(this.config.getJerseyClientConfiguration()).build("jerseyClient");
-		oandaClient.setReadTimeout(10000);
-        oandaClient.setConnectTimeout(2500);
-
-		bind(WebResource.class)
-			.annotatedWith(OandaInstrumentsResource.class)
-			.toInstance(oandaClient.resource("http://api-sandbox.oanda.com/v1/instruments"));
-
-		bind(WebResource.class)
-			.annotatedWith(OandaPriceResource.class)
-			.toInstance(oandaClient.resource("http://api-sandbox.oanda.com/v1/prices"));
+		bindOandaServices();
 
         bind(OandaServiceConfiguration.class).toInstance(this.config);
 
@@ -66,6 +57,22 @@ public class OandaServiceModule extends AbstractModule {
         bind(RabbitMQGateway.class);
 
         bind(EventBus.class).toInstance(new EventBus("The event bus"));
+	}
+
+	private void bindOandaServices() {
+		final Client oandaClient = new JerseyClientBuilder(this.env).using(this.config.getJerseyClientConfiguration()).build("jerseyClient");
+		oandaClient.setReadTimeout(10000);
+        oandaClient.setConnectTimeout(2500);
+        String rootUrl = config.getOanda().getRestApiUrl();
+        String authHeaderContent = "";
+
+		bind(WebResource.class)
+			.annotatedWith(OandaInstrumentsResource.class)
+			.toInstance(oandaClient.resource(rootUrl + "/v1/instruments"));
+
+		bind(WebResource.class)
+			.annotatedWith(OandaPriceResource.class)
+			.toInstance(oandaClient.resource(rootUrl + "/v1/prices"));
 	}
 
 	private ConnectionFactory createRabbitCF() {

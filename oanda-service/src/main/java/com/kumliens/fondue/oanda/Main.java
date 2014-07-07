@@ -27,8 +27,7 @@ import com.kumliens.fondue.oanda.services.PriceFetcherService;
  */
 public class Main extends Application<OandaServiceConfiguration> {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(Main.class);
+	private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
 	public static void main(final String[] args) throws Exception {
 		new Main().run(args);

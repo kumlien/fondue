@@ -1,12 +1,11 @@
 package com.kumliens.fondue.priceservice.rabbitmq;
 
-import java.io.IOException;
-
-import javax.annotation.meta.Exhaustive;
-
 import io.dropwizard.lifecycle.Managed;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -14,7 +13,6 @@ import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.kumliens.fondue.priceservice.PriceserviceConfiguration;
 import com.rabbitmq.client.AMQP.BasicProperties;
-import com.rabbitmq.client.AMQP.Queue;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -28,10 +26,8 @@ import com.rabbitmq.client.Envelope;
  */
 public class RabbitMQGateway implements Managed {
 
-	private static final Logger logger = org.slf4j.LoggerFactory
-			.getLogger(RabbitMQGateway.class);
+	private static final Logger logger = LoggerFactory.getLogger(RabbitMQGateway.class);
 
-	private static final String ROUTING_KEY_PREFIX = "prices.oanda.fx.";
 
 	private final ConnectionFactory cf;
 

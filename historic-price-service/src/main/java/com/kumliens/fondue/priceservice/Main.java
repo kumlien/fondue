@@ -13,6 +13,13 @@ import com.kumliens.fondue.priceservice.guice.PriceserviceModule;
 import com.kumliens.fondue.priceservice.rabbitmq.RabbitMQGateway;
 import com.kumliens.fondue.priceservice.resources.AdminResourceImpl;
 
+/**
+ * Starting the service providing historic prices to the system. 
+ * 
+ *Start like: java -jar target/historic-price-service-0.0.1-SNAPSHOT.jar server src/main/resources/PriceService.yml
+ * 
+ * @author svante
+ */
 public class Main extends Application<PriceserviceConfiguration> {
 	
 	private static final Logger logger = LoggerFactory.getLogger(Main.class);
