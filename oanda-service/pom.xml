@@ -13,6 +13,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<dropwizard-cassandra.version>0.5</dropwizard-cassandra.version>
 		<amqp.version>3.3.1</amqp.version>
+		<lz4.version>1.2.0</lz4.version>
 	</properties>
 
 
@@ -32,17 +33,20 @@
 			<artifactId>guice</artifactId>
 			<version>${guice.version}</version>
 		</dependency>
-		
 		<dependency>
-            <groupId>com.rabbitmq</groupId>
-            <artifactId>amqp-client</artifactId>
-            <version>${amqp.version}</version>
-        </dependency>
-
+			<groupId>com.rabbitmq</groupId>
+			<artifactId>amqp-client</artifactId>
+			<version>${amqp.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.stuartgunter</groupId>
 			<artifactId>dropwizard-cassandra</artifactId>
 			<version>${dropwizard-cassandra.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.jpountz.lz4</groupId>
+			<artifactId>lz4</artifactId>
+			<version>${lz4.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
