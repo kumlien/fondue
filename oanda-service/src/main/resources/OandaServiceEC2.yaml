@@ -29,14 +29,14 @@ logging:
     # Rolled over daily and retained for 5 days.
     - type: file
       threshold: INFO
-      currentLogFilename: /var/log/fondue/price_service/system.log
-      archivedLogFilenamePattern: /var/log/fondue/price_service/system-%d.log.gz
+      currentLogFilename: /var/log/fondue/oanda_service/system.log
+      archivedLogFilenamePattern: /var/log/fondue/oanda_service/system-%d.log.gz
       archivedFileCount: 5
 
     # Log debug messages, info, warnings and errors to our apps' debug log.
     # Rolled over hourly and retained for 6 hours
     - type: file
       threshold: DEBUG
-      currentLogFilename: /var/log/fondue/price_service/debug.log
-      archivedLogFilenamePattern: /var/log/fondue/price_service/debug-%d{yyyy-MM-dd-hh}.log.gz
+      currentLogFilename: /var/log/fondue/oanda_service/debug.log
+      archivedLogFilenamePattern: /var/log/fondue/oanda_service/debug-%d{yyyy-MM-dd-hh}.log.gz
       archivedFileCount: 6
