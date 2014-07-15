@@ -19,3 +19,27 @@ amqp:
   exchange: prices
   queue: historic-price-service
   routingKey: "prices.#"
+
+logging:
+ level: DEBUG
+ appenders:
+    # Log warnings and errors to stderr
+    - type: console
+      threshold: WARN
+      target: stderr
+
+    # Log info, warnings and errors to our apps' main log.
+    # Rolled over daily and retained for 5 days.
+    - type: file
+      threshold: INFO
+      currentLogFilename: /var/log/fondue/price_service/system.log
+      archivedLogFilenamePattern: /var/log/fondue/price_service/system-%d.log.gz
+      archivedFileCount: 5
+
+    # Log debug messages, info, warnings and errors to our apps' debug log.
+    # Rolled over hourly and retained for 6 hours
+    - type: file
+      threshold: DEBUG
+      currentLogFilename: /var/log/fondue/price_service/debug.log
+      archivedLogFilenamePattern: /var/log/fondue/price_service/debug-%d{yyyy-MM-dd-hh}.log.gz
+      archivedFileCount: 6
