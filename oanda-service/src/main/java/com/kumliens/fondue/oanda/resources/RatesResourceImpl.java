@@ -1,7 +1,10 @@
 package com.kumliens.fondue.oanda.resources;
 
+import io.dropwizard.jersey.caching.CacheControl;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -54,6 +57,7 @@ public class RatesResourceImpl {
 	@Path("prices/{instrument}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Timed
+	@CacheControl(maxAge=60, maxAgeUnit=TimeUnit.SECONDS)
 	public Response getPrice(@PathParam("instrument") Instrument instrument) {
 		logger.info("Fetching price for instrument " + instrument);
 		

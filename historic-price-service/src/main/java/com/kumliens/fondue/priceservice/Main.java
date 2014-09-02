@@ -1,9 +1,11 @@
 package com.kumliens.fondue.priceservice;
 
 import io.dropwizard.Application;
+import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
+import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,20 +39,24 @@ public class Main extends Application<PriceserviceConfiguration> {
 	@Override
 	public void initialize(Bootstrap<PriceserviceConfiguration> bootstrap) {
 		
-		
 	}
 
 	@Override
 	public void run(PriceserviceConfiguration config, Environment env) throws Exception {
 		logger.debug("Starting...");
-		logger.warn("The config: " + config.getAmqp().getExchange());
 		final Injector injector = Guice.createInjector(new PriceserviceModule(env, config));
+		logger.debug("Created Guice injector");
 		
 		final AdminResourceImpl ar = injector.getInstance(AdminResourceImpl.class);
-		logger.warn("The admin resource: " + ar);
 		env.jersey().register(ar);
+		logger.debug("Registered the Admin resource");
 		
 		env.lifecycle().manage(injector.getInstance(RabbitMQGateway.class));
+		logger.debug("Registered the RabbitMQGateway instance to be lifecycle managed by Dropwizard");
+		
+		final DBIFactory factory = new DBIFactory();
+	    final DBI jdbi = factory.build(env, config.getDataSourceFactory(), "postgresql");   
+	    
 	}
 
 }

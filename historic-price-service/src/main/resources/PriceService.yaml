@@ -7,8 +7,48 @@ server:
   - type: http
     port: 9081
 
+#Installed under /usr/local/var/postgres/
+#http://www.moncefbelyamani.com/how-to-install-postgresql-on-a-mac-with-homebrew-and-lunchy/
+database:
+  # the name of your JDBC driver
+  driverClass: org.postgresql.Driver
+
+  # the username
+  user: fondue
+
+  # the password
+  password: fondue
+
+  # the JDBC URL
+  url: jdbc:postgresql://127.0.0.1/fondue
+
+  # any properties specific to your JDBC driver:
+  properties:
+    charSet: UTF-8
+
+  # the maximum amount of time to wait on an empty pool before throwing an exception
+  maxWaitForConnection: 1s
+
+  # the SQL query to run when validating a connection's liveness
+  validationQuery: "SELECT 1"
+
+  # the minimum number of connections to keep open
+  minSize: 4
+
+  # the maximum number of connections to keep open
+  maxSize: 32
+
+  # whether or not idle connections should be validated
+  checkConnectionWhileIdle: false
+
+  # the amount of time to sleep between runs of the idle connection validation, abandoned cleaner and idle pool resizing
+  evictionInterval: 10s
+
+  # the minimum amount of time an connection must sit idle in the pool before it is eligible for eviction
+  minIdleTime: 1 minute
+
 cassandra:
- clusterName: "Svantes cluster"
+ clusterName: "fondue"
  contactPoints: ["127.0.0.1"]
 
 amqp:
@@ -19,3 +59,27 @@ amqp:
   exchange: prices
   queue: historic-price-service
   routingKey: "prices.#"
+
+logging:
+ level: DEBUG
+ appenders:
+    # Log warnings and errors to stderr
+    - type: console
+      threshold: info
+      target: stderr
+
+    # Log info, warnings and errors to our apps' main log.
+    # Rolled over daily and retained for 5 days.
+    - type: file
+      threshold: INFO
+      currentLogFilename: /var/log/fondue/price_service/system.log
+      archivedLogFilenamePattern: /var/log/fondue/price_service/system-%d.log.gz
+      archivedFileCount: 5
+
+    # Log debug messages, info, warnings and errors to our apps' debug log.
+    # Rolled over hourly and retained for 6 hours
+    - type: file
+      threshold: DEBUG
+      currentLogFilename: /var/log/fondue/price_service/debug.log
+      archivedLogFilenamePattern: /var/log/fondue/price_service/debug-%d{yyyy-MM-dd-hh}.log.gz
+      archivedFileCount: 6

@@ -1,11 +1,13 @@
 package com.kumliens.fondue.oanda.representation;
 
-import java.io.UnsupportedEncodingException;
+import java.io.UnsupportedEncodingException;	
 import java.net.URLEncoder;
 
 public enum Instrument {
 
-	EUR_USD("EUR_USD"), USD_JPY("USD_JPY"), EUR_CAD("EUR_CAD");
+	EUR_USD("EUR_USD"), 
+	USD_JPY("USD_JPY"), 
+	EUR_CAD("EUR_CAD");
 
 	private final String code;
 

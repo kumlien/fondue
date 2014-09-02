@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import org.apache.http.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +23,11 @@ import com.kumliens.fondue.oanda.responses.PriceListResponse;
 import com.rabbitmq.client.ConnectionFactory;
 import com.sun.jersey.api.client.WebResource;
 
+/**
+ * 
+ * 
+ * @author svante
+ */
 public class PriceFetcherService extends AbstractScheduledService {
 
     private static final Logger logger = LoggerFactory.getLogger(PriceFetcherService.class);

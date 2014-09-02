@@ -1,6 +1,7 @@
 package com.kumliens.fondue.priceservice;
 
 import io.dropwizard.Configuration;
+import io.dropwizard.db.DataSourceFactory;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -20,6 +21,15 @@ public class PriceserviceConfiguration extends Configuration {
     @NotNull
     @JsonProperty("cassandra")
     private CassandraFactory cassandra;
+	
+	@Valid
+    @NotNull
+    @JsonProperty
+    private DataSourceFactory database = new DataSourceFactory();
+
+    public DataSourceFactory getDataSourceFactory() {
+        return database;
+    }
 
 	public AMQPConfiguration getAmqp() {
 		return amqp;
