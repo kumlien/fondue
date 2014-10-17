@@ -8,6 +8,13 @@ import com.kumliens.fondue.priceservice.PriceserviceConfiguration;
 import com.kumliens.fondue.priceservice.resources.AdminResourceImpl;
 import com.rabbitmq.client.ConnectionFactory;
 
+/**
+ * This is the Guice module for this service. Binds classes or 
+ * instances to the guice context. These classes can the @Inject
+ * other bound types.
+ * 
+ * @author svante
+ */
 public class PriceserviceModule extends AbstractModule {
 
 	private final Environment env;

@@ -72,7 +72,7 @@ public class RabbitMQGateway implements Managed {
 				String contentType = properties.getContentType();
 				long deliveryTag = envelope.getDeliveryTag();
 				String bodyString = new String(body);
-				logger.info("New message received: " + bodyString);
+				logger.info("New message received: {}", bodyString);
 			}
 
 		});
