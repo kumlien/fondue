@@ -11,6 +11,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -18,12 +19,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.kumliens.fondue.oanda.guice.OandaInstrumentsResource;
 import com.kumliens.fondue.oanda.guice.OandaPriceResource;
 import com.kumliens.fondue.oanda.representation.Instrument;
 import com.kumliens.fondue.oanda.responses.InstrumentListResponse;
 import com.kumliens.fondue.oanda.responses.PriceListResponse;
+import com.kumliens.fondue.oanda.services.PriceFetcherService;
 import com.sun.jersey.api.client.WebResource;
 
 
@@ -46,6 +49,9 @@ public class RatesResourceImpl {
 	@Inject @OandaPriceResource
 	private WebResource priceResource;
 	
+	@Inject 
+	private PriceFetcherService priceFetcherService;
+	
 	private final String INSTRUMENT_FIELDS;
 	
 	public RatesResourceImpl() throws UnsupportedEncodingException {
@@ -54,15 +60,18 @@ public class RatesResourceImpl {
 	
 	
 	@GET
-	@Path("prices/{instrument}")
+	@Path("prices")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Timed
 	@CacheControl(maxAge=60, maxAgeUnit=TimeUnit.SECONDS)
-	public Response getPrice(@PathParam("instrument") Instrument instrument) {
+	public Response getPrice(@QueryParam("instrument") Instrument instrument) {
 		logger.info("Fetching price for instrument " + instrument);
-		
+		Preconditions.checkNotNull(instrument);
 		try {
-			PriceListResponse priceList = priceResource.queryParam("instruments", instrument.getCode()).get(PriceListResponse.class);
+			PriceListResponse priceList = priceFetcherService.fetchPrices(instrument.getCode());
+//			PriceListResponse priceList = priceResource.
+//					queryParam("instruments", instrument.getCode()).
+//					get(PriceListResponse.class);
 			return Response.ok(priceList, MediaType.APPLICATION_JSON).build();
 		} catch (Exception e) {			
 			logger.error("Error fetching instrument prices", e);
@@ -73,8 +82,9 @@ public class RatesResourceImpl {
 	@GET
 	@Path("instruments")
 	@Timed
-	public Response getsInstruments(@PathParam("instruments") @DefaultValue("") String instrumentList) {
+	public Response getsInstruments(@QueryParam("instruments") @DefaultValue("") String instrumentList) {
 		logger.info("Fetching list of instruments: " + instrumentList);
+		Preconditions.checkNotNull(instrumentList);
 		try {
 			InstrumentListResponse instrumentListResponse = instrumentsResource.queryParam("fields", INSTRUMENT_FIELDS).accept(MediaType.APPLICATION_JSON).get(InstrumentListResponse.class);
 			logger.info("Fetched " + instrumentListResponse.getInstruments().size() + " instrument definitions");

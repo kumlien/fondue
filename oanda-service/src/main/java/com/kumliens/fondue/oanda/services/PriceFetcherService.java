@@ -24,7 +24,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.sun.jersey.api.client.WebResource;
 
 /**
- * 
+ * Service for fetching prices using a {@link WebResource} defined as a guice guy.
  * 
  * @author svante
  */
@@ -80,15 +80,10 @@ public class PriceFetcherService extends AbstractScheduledService {
             logger.info("We are paused...");
             return;
         }
-        logger.info("Fetching prices with list " + instrumentList);
+        
         try {
-        	priceResource.queryParam("", "").header("Authorization", authHeaderContent);
-            final PriceListResponse priceList = priceResource.
-            		queryParam("instruments", this.instrumentList).
-            		header("Authorization", authHeaderContent).
-            		get(PriceListResponse.class);
+        	final PriceListResponse priceList = fetchPrices(instrumentList);
             logger.info("Got prices: " + priceList);
-            //todo post to the eventbus to get picked up by the rabbit gateway
             for(Price price : priceList.getPrices()) {
             	eventBus.post(new NewPriceAvailableEvent(price));
             }
@@ -96,6 +91,21 @@ public class PriceFetcherService extends AbstractScheduledService {
             logger.error("Error fetching prices...", e);
         }
     }
+
+    /**
+     * Fetch the prices for the given instruments
+     * 
+     * @param instrumentList
+     * @return
+     */
+	public PriceListResponse fetchPrices(String instrumentList) {
+		logger.info("Fetching prices with list " + instrumentList);
+		final PriceListResponse priceList = priceResource.
+				queryParam("instruments", instrumentList).
+				header("Authorization", authHeaderContent).
+				get(PriceListResponse.class);
+		return priceList;
+	}
 
     @Override
     protected Scheduler scheduler() {
