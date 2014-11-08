@@ -18,6 +18,8 @@ import com.kumliens.fondue.oanda.events.PausePriceFetcherServiceEvent;
 import com.kumliens.fondue.oanda.events.ResumePriceFetcherServiceEvent;
 import com.kumliens.fondue.oanda.guice.OandaPriceResource;
 import com.kumliens.fondue.oanda.representation.Instrument;
+import com.kumliens.fondue.oanda.representation.ServiceStatus;
+import com.kumliens.fondue.oanda.representation.Status;
 import com.kumliens.fondue.oanda.responses.Price;
 import com.kumliens.fondue.oanda.responses.PriceListResponse;
 import com.rabbitmq.client.ConnectionFactory;
@@ -38,13 +40,13 @@ public class PriceFetcherService extends AbstractScheduledService {
 
     @Inject
     @OandaPriceResource
-    private WebResource priceResource;
+    private WebResource oandaPriceResource;
     
     private final EventBus eventBus;
-
-    private boolean isPaused = false;
     
     private final String authHeaderContent;
+
+	private Status status = Status.STOPPED;
 
     @Inject
     public PriceFetcherService(final ConnectionFactory connectionFactory, final OandaServiceConfiguration config, final EventBus eventBus) {
@@ -53,6 +55,7 @@ public class PriceFetcherService extends AbstractScheduledService {
             eventBus.register(this);
             instrumentList = Instrument.asURLEncodedCommaSeparatedList();
             authHeaderContent = "Bearer " + config.getOanda().getApiKey();
+            status = Status.RUNNING;
         } catch (final UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
@@ -65,19 +68,19 @@ public class PriceFetcherService extends AbstractScheduledService {
 
     @Subscribe
     public void onPause(final PausePriceFetcherServiceEvent ppfs) {
-        isPaused = true;
+        status = Status.PAUSED;
     }
 
     @Subscribe
     public void onResume(final ResumePriceFetcherServiceEvent rpfs) {
-        isPaused = false;
+        status = Status.RUNNING;
     }
 
     @Override
     @Timed
     protected void runOneIteration() throws Exception {
-        if (isPaused) {
-            logger.info("We are paused...");
+        if (status != Status.RUNNING) {
+            logger.info("We are not running but {}, exiting.", status);
             return;
         }
         
@@ -100,7 +103,7 @@ public class PriceFetcherService extends AbstractScheduledService {
      */
 	public PriceListResponse fetchPrices(String instrumentList) {
 		logger.info("Fetching prices with list " + instrumentList);
-		final PriceListResponse priceList = priceResource.
+		final PriceListResponse priceList = oandaPriceResource.
 				queryParam("instruments", instrumentList).
 				header("Authorization", authHeaderContent).
 				get(PriceListResponse.class);
@@ -111,5 +114,9 @@ public class PriceFetcherService extends AbstractScheduledService {
     protected Scheduler scheduler() {
         return Scheduler.newFixedRateSchedule(2500, this.interval, TimeUnit.MILLISECONDS);
     }
+
+	public Status getStatus() {
+		return status;
+	}
 
 }

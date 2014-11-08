@@ -63,7 +63,7 @@ public class AdminResourceImpl {
 
         }
 
-        final ServiceStatus ss = new ServiceStatus("PriceFetcher", this.priceFetcherService.toString() + "");
+        final ServiceStatus ss = new ServiceStatus("PriceFetcher", priceFetcherService.getStatus());
 
 		return Response.ok().entity(ss).build();
 	}

@@ -4,20 +4,18 @@ public class ServiceStatus {
 	
 	private final String name;
 	
-	private final String status;
+	private final Status status;
 
-	public ServiceStatus(String name, String status) {
+	public ServiceStatus(String name, Status status) {
 		this.name = name;
 		this.status = status;
 	}
 
-	public String getStatus() {
+	public Status getStatus() {
 		return status;
 	}
 
 	public String getName() {
 		return name;
 	}
-	
-	
 }
