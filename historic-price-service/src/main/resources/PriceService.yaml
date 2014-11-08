@@ -20,7 +20,7 @@ database:
   password: fondue
 
   # the JDBC URL
-  url: jdbc:postgresql://127.0.0.1/fondue
+  url: jdbc:postgresql://192.168.59.103/fondue
 
   # any properties specific to your JDBC driver:
   properties:
